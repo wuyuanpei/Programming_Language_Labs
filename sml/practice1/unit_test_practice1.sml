@@ -1,0 +1,178 @@
+use "../unit_test/unit_test.sml";
+use "practice1.sml";
+
+val _ = let
+    val _ = print "\n\n\n>>> begin test error output\n"
+
+    val _ = UnitTest.enter("alternate")
+    val _ = UnitTest.assertEquals_Int(~2, alternate([1,2,3,4]))
+    val _ = UnitTest.assertEquals_Int(10, alternate([1,~2,3,~4]))
+    val _ = UnitTest.assertEquals_Int(0-10, alternate([~1,2,~3,4]))
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("min_max")
+    val _ = UnitTest.assertEquals_IntInt((2,13), min_max([3,2,13,8,5]))
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("cumsum")
+    val _ = UnitTest.assertEquals_IntList([1,5,25], cumsum([1,4,20]))
+    val _ = UnitTest.assertEquals_IntList([1,3,6,10,15], cumsum([1,2,3,4,5]))
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("greeting")
+    val _ = UnitTest.assertEquals_String("Hello there, Dan!", greeting(SOME "Dan"))
+    val _ = UnitTest.assertEquals_String("Hello there, you!", greeting(NONE))
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("repeat")
+    val _ = UnitTest.assertEquals_IntList([1,1,1,1,3,3,3], repeat([1,2,3],[4,0,3]))
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("addOpt")
+    val _ = UnitTest.assertEquals_IntOption(SOME(3), addOpt(SOME(1),SOME(2)))
+    val _ = UnitTest.assertEquals_IntOption(NONE, addOpt(SOME(1),NONE))
+    val _ = UnitTest.assertEquals_IntOption(NONE, addOpt(NONE,SOME(1)))
+    val _ = UnitTest.assertEquals_IntOption(NONE, addOpt(NONE,NONE))
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("addAllOpt")
+    val _ = UnitTest.assertEquals_IntOption(SOME(4), addAllOpt([SOME(1),NONE,SOME(3)]))
+    val _ = UnitTest.assertEquals_IntOption(SOME(9), addAllOpt([NONE, SOME(1),NONE,SOME(3), NONE, SOME(5), NONE]))
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("any")
+    val _ = UnitTest.assertFalse(any([]))
+    val _ = UnitTest.assertFalse(any([false]))
+    val _ = UnitTest.assertFalse(any([false, false]))
+    val _ = UnitTest.assertFalse(any([false, false, false]))
+    val _ = UnitTest.assertTrue(any([true, false, false]))
+    val _ = UnitTest.assertTrue(any([false, true, false]))
+    val _ = UnitTest.assertTrue(any([false, false, true]))
+    val _ = UnitTest.assertTrue(any([true, false, true]))
+    val _ = UnitTest.assertTrue(any([true, true, true]))
+    val _ = UnitTest.assertTrue(any([true, true]))
+    val _ = UnitTest.assertTrue(any([true]))
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("all")
+    val _ = UnitTest.assertTrue(all([]))
+    val _ = UnitTest.assertFalse(all([false]))
+    val _ = UnitTest.assertFalse(all([false, false]))
+    val _ = UnitTest.assertFalse(all([false, false, false]))
+    val _ = UnitTest.assertFalse(all([true, false, false]))
+    val _ = UnitTest.assertFalse(all([false, true, false]))
+    val _ = UnitTest.assertFalse(all([false, false, true]))
+    val _ = UnitTest.assertFalse(all([true, false, true]))
+    val _ = UnitTest.assertTrue(all([true, true, true]))
+    val _ = UnitTest.assertTrue(all([true, true]))
+    val _ = UnitTest.assertTrue(all([true]))
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("zip")
+    val _ = UnitTest.assertEquals_IntIntList([(1,4), (2,6)], zip([1,2,3], [4,6]))
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("zipRecycle")
+    val _ = UnitTest.assertEquals_IntIntList([(1,1),(2,2),(3,3),(1,4),(2,5),(3,6),(1,7)], zipRecycle([1,2,3],[1,2,3,4,5,6,7]))
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("zipOpt")
+    val _ = UnitTest.assertEquals_IntIntListOption(NONE, zipOpt([],[1]))
+    val _ = UnitTest.assertEquals_IntIntListOption(NONE, zipOpt([1],[]))
+    val _ = UnitTest.assertEquals_IntIntListOption(NONE, zipOpt([1,2],[1,2,3]))
+    val _ = UnitTest.assertEquals_IntIntListOption(NONE, zipOpt([1,2,3],[1,2]))
+    val _ = UnitTest.assertEquals_IntIntListOption(SOME [], zipOpt([],[]))
+    val _ = UnitTest.assertEquals_IntIntListOption(SOME [(1,2)], zipOpt([1],[2]))
+    val _ = UnitTest.assertEquals_IntIntListOption(SOME [(1,2),(3,4),(5,6)], zipOpt([1,3,5],[2,4,6]))
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("lookup")
+    val _ = UnitTest.assertEquals_IntOption(NONE, lookup([],"hello"))
+    val _ = UnitTest.assertEquals_IntOption(NONE, lookup([("goodbye", 425)],"hello"))
+    val _ = UnitTest.assertEquals_IntOption(SOME 425, lookup([("hello", 425)],"hello"))
+    val _ = UnitTest.assertEquals_IntOption(NONE, lookup([("a", 131), ("b",231), ("c",425)],"d"))
+    val _ = UnitTest.assertEquals_IntOption(SOME 131, lookup([("a", 131), ("b",231), ("c",425)],"a"))
+    val _ = UnitTest.assertEquals_IntOption(SOME 231, lookup([("a", 131), ("b",231), ("c",425)],"b"))
+    val _ = UnitTest.assertEquals_IntOption(SOME 425, lookup([("a", 131), ("b",231), ("c",425)],"c"))
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("splitup")
+    val _ = UnitTest.assertEquals_IntListIntList(([],[]), splitup([]))
+    val _ = UnitTest.assertEquals_IntListIntList(([~1,~3,~5,~7], [0,2,4,6,8]), splitup([0,~1,2,~3,4,~5,6,~7,8]))
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("splitAt")
+    val _ = UnitTest.assertEquals_IntListIntList(([],[]), splitAt([], 200))
+    val _ = UnitTest.assertEquals_IntListIntList(([131],[231,425]), splitAt([131,231,425], 200))
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("isSorted")
+    val _ = UnitTest.assertTrue(isSorted [])
+    val _ = UnitTest.assertTrue(isSorted [425])
+    val _ = UnitTest.assertTrue(isSorted [131,231,425])
+    val _ = UnitTest.assertFalse(isSorted [131,425,231])
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("isAnySorted")
+    val _ = UnitTest.assertTrue(isAnySorted [])
+    val _ = UnitTest.assertTrue(isAnySorted [425])
+    val _ = UnitTest.assertTrue(isAnySorted [131,231,425])
+    val _ = UnitTest.assertTrue(isAnySorted [425,231,131])
+    val _ = UnitTest.assertFalse(isAnySorted [131,425,231])
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("sortedMerge")
+    val _ = UnitTest.assertEquals_IntList([], sortedMerge([],[]))
+    val _ = UnitTest.assertEquals_IntList([425], sortedMerge([425],[]))
+    val _ = UnitTest.assertEquals_IntList([425], sortedMerge([],[425]))
+    val _ = UnitTest.assertEquals_IntList([131,231,425], sortedMerge([231],[131,425]))
+    val _ = UnitTest.assertEquals_IntList([1,4,5,7,8,9], sortedMerge([1,4,7],[5,8,9]))
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("qsort")
+    val _ = UnitTest.assertEquals_IntList([], qsort([]))
+    val _ = UnitTest.assertEquals_IntList([425], qsort([425]))
+    val _ = UnitTest.assertEquals_IntList([131,231,425], qsort([231,131,425]))
+    val _ = UnitTest.assertEquals_IntList([1,4,5,7,8,9], qsort([1,4,7,5,8,9]))
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("divide")
+    val _ = UnitTest.assertEquals_IntListIntList(([],[]), divide([]))
+    val _ = UnitTest.assertEquals_IntListIntList(([1],[]), divide([1]))
+    val _ = UnitTest.assertEquals_IntListIntList(([1],[2]), divide([1,2]))
+    val _ = UnitTest.assertEquals_IntListIntList(([1,3,5,7],[2,4,6]), divide([1,2,3,4,5,6,7]))
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("not_so_quick_sort")
+    val _ = UnitTest.assertEquals_IntList([], not_so_quick_sort([]))
+    val _ = UnitTest.assertEquals_IntList([425], not_so_quick_sort([425]))
+    val _ = UnitTest.assertEquals_IntList([131,231,425], not_so_quick_sort([231,131,425]))
+    val _ = UnitTest.assertEquals_IntList([1,4,5,7,8,9], not_so_quick_sort([1,4,7,5,8,9]))
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("fullDivide")
+    val _ = UnitTest.assertEquals_IntInt((3,5), fullDivide(2,40))
+    val _ = UnitTest.assertEquals_IntInt((0,10), fullDivide(3,10))
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("factorize")
+    val _ = UnitTest.assertEquals_IntIntList([(2,2), (5,1)], factorize(20))
+    val _ = UnitTest.assertEquals_IntIntList([(2,2), (3,2)], factorize(36))
+    val _ = UnitTest.assertEquals_IntIntList([(2,3), (3,1), (5,1)], factorize(120))
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("multiply")
+    val _ = UnitTest.assertEquals_Int(8, multiply([(2,3)]))
+    val _ = UnitTest.assertEquals_Int(120, multiply([(2,3), (3,1), (5,1)]))
+    val _ = UnitTest.assertEquals_Int(20, multiply([(2,2), (5,1)]))
+    val _ = UnitTest.assertEquals_Int(36, multiply([(2,2), (3,2)]))
+    val _ = UnitTest.leave()
+
+    val _ = UnitTest.enter("all_products")
+    val _ = UnitTest.assertEquals_IntList([1,2,4,5,10,20], all_products([(2,2),(5,1)]))
+    val _ = UnitTest.leave()
+
+    val _ = print "<<< end test error output\n\n"
+in
+	()
+end
